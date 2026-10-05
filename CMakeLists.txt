@@ -1,4 +1,4 @@
-project( QCC_PCP_LIB )
+project( QPCP_LIB )
 
 # This library is only intended to be built as part of the CloudCompare
 # build tree (added as a submodule under CloudCompare/libs). It relies on
@@ -27,5 +27,5 @@ endif()
 if( TARGET OpenMP::OpenMP_CXX )
 	target_link_libraries( ${PROJECT_NAME} PUBLIC OpenMP::OpenMP_CXX )
 else()
-	message( STATUS "qCC_pcp: OpenMP not found - building without parallelism" )
+	message( STATUS "qPCP: OpenMP not found - building without parallelism" )
 endif()

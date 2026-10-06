@@ -3,7 +3,7 @@
 
 using namespace PCP;
 
-int Partition::labelCutPursuitComponents(
+int Partition::LabelCutPursuitComponents(
     CCCoreLib::GenericIndexedCloudPersist* theCloud,
     const Parameters&                      params,
     std::vector<int32_t>&                  components,
@@ -23,7 +23,7 @@ int Partition::labelCutPursuitComponents(
 	}
 
 	// instantiate the graph and compute edges
-	Graph G(params.N, theCloud, theOctree);
+	Graph G(static_cast<uint32_t>(theCloud->size()), theCloud, theOctree);
 	G.computeEdges(params.knn, params.knnRadius, progressCb);
 
 	// call cut pursuit

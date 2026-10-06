@@ -38,7 +38,7 @@ void Graph::computeEdges(int32_t                  knn,
 {
 	if (m_cloud && m_octree)
 	{
-		unsigned char bestLevel = m_octree->findBestLevelForAGivenNeighbourhoodSizeExtraction(knnRadius);
+		unsigned char bestLevel = m_octree->findBestLevelForAGivenNeighbourhoodSizeExtraction(static_cast<PointCoordinateType>(knnRadius));
 
 		// progress notification (optional)
 		if (progressCb)

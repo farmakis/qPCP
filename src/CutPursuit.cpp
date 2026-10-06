@@ -16,8 +16,8 @@
 
 #define ADD1(i) (((size_t)i) + (size_t)1) // avoid overflows
 #define EDGE_WEIGHTS_(e) (edge_weights ? edge_weights[(e)] : homo_edge_weight)
-#define VERT_WEIGHTS_(v) (vert_weights ? vert_weights[(v)] : (float)1.0)
-#define COOR_WEIGHTS_(d) (coor_weights ? coor_weights[(d)] : (float)1.0)
+#define VERT_WEIGHTS_(v) (vert_weights ? vert_weights[(v)] : 1.0f)
+#define COOR_WEIGHTS_(d) (coor_weights ? coor_weights[(d)] : 1.0f)
 
 /** specific flags **/
 /* enusre number of components do not exceed integer representation */
@@ -143,7 +143,7 @@ void CP::set_monitoring_arrays(float*  objective_values,
 float CP::distance(const float* Yv, const float* Xv) const
 {
 	float  dist = 0.0;
-	size_t Q    = loss; // number of coordinates for quadratic part
+	size_t Q    = static_cast<size_t>(loss); // number of coordinates for quadratic part
 	if (Q != 0)
 	{ /* quadratic part */
 		for (size_t d = 0; d < Q; d++)
@@ -156,7 +156,7 @@ float CP::distance(const float* Yv, const float* Xv) const
 		 just compute cross-entropy here */
 		float       distKL = 0.0;
 		const float s      = loss < 1.0 ? loss : eps;
-		const float c      = 1.0 - s;
+		const float c      = 1.0f - s;
 		const float u      = s / (D - Q);
 		for (size_t d = Q; d < D; d++)
 		{
@@ -201,9 +201,9 @@ void CP::set_loss(float loss, const float* Y, const float* vert_weights, const f
 		return;
 	}
 	/* recompute the constant dist(Y, Y) for Kullback-Leibler */
-	const size_t Q       = loss; // number of coordinates for quadratic part
+	const size_t Q       = static_cast<size_t>(loss); // number of coordinates for quadratic part
 	const float  s       = loss < 1.0 ? loss : eps;
-	const float  c       = 1.0 - s;
+	const float  c       = 1.0f - s;
 	const float  u       = s / (D - Q);
 	float        fYY_par = 0.0; // auxiliary variable for parallel region
 
@@ -1017,10 +1017,11 @@ void CP::compute_reduced_graph()
 	first_active_edge[0] = 0;
 
 	/* temporary buffer size */
-	size_t bufsize = rE > rV * (double)E / V ? rE : rV * (double)E / V;
+	double rv_x_E_div_V = rV * static_cast<double>(E) / V;
+	size_t bufsize      = static_cast<size_t>(std::min(rv_x_E_div_V, static_cast<double>(rE)));
 
-	reduced_edges        = (int32_t*)malloc_check(sizeof(int32_t) * 2 * bufsize);
-	reduced_edge_weights = (float*)malloc_check(sizeof(float) * bufsize);
+	reduced_edges        = reinterpret_cast<int32_t*>(malloc_check(sizeof(int32_t) * 2 * bufsize));
+	reduced_edge_weights = reinterpret_cast<float*>(malloc_check(sizeof(float) * bufsize));
 
 	/**  convert to edge list representation with weights  **/
 
@@ -1594,10 +1595,9 @@ float CP::vert_split_cost(const Split_info& split_info, int32_t v, int32_t k) co
 	return fv(v, split_info.sX + D * k);
 }
 
-float CP::edge_split_cost(const Split_info& split_info, int32_t e, int32_t lu, int32_t lv) const
+float CP::edge_split_cost([[maybe_unused]] const Split_info& split_info, int32_t e, int32_t lu, int32_t lv) const
 {
-	(void)split_info;
-	return lu == lv ? 0.0 : EDGE_WEIGHTS_(e);
+	return lu == lv ? 0.0f : EDGE_WEIGHTS_(e);
 }
 
 float CP::vert_split_cost(const Split_info& split_info, int32_t v, int32_t k, int32_t l) const
@@ -1842,7 +1842,7 @@ void CP::split_component(int32_t rv, Maxflow<int32_t, float>* maxflow)
 	float damping = split_damp_ratio;
 	for (int split_it = 0; split_it < split_iter_num; split_it++)
 	{
-		damping += (1.0 - split_damp_ratio) / split_iter_num;
+		damping += (1.0f - split_damp_ratio) / split_iter_num;
 
 		if (split_it > 0)
 		{
@@ -2065,7 +2065,7 @@ void CP::compute_merge_candidate(int32_t re)
 	float  wrv = comp_weights[rv] / (comp_weights[ru] + comp_weights[rv]);
 
 	float  gain = edge_weight;
-	size_t Q    = loss; // number of coordinates for quadratic part
+	size_t Q    = static_cast<size_t>(loss); // number of coordinates for quadratic part
 
 	if (Q != 0)
 	{
@@ -2096,7 +2096,7 @@ void CP::compute_merge_candidate(int32_t re)
 			/* smoothed Kullback-Leibler gain */
 			float       gainKLu = 0.0, gainKLv = 0.0;
 			const float s = loss < 1.0 ? loss : eps;
-			const float c = 1.0 - s;
+			const float c = 1.0f - s;
 			const float u = s / (D - Q);
 			for (size_t d = Q; d < D; d++)
 			{
@@ -2161,9 +2161,9 @@ float CP::compute_evolution() const
 		float        distXX = 0.0;
 		if (loss != quadratic_loss())
 		{
-			const size_t Q = loss; // number of coordinates for quadratic part
-			const float  s = loss < 1.0 ? loss : eps;
-			const float  c = 1.0 - s;
+			const size_t Q = static_cast<size_t>(loss); // number of coordinates for quadratic part
+			const float  s = loss < 1.0f ? loss : eps;
+			const float  c = 1.0f - s;
 			const float  u = s / (D - Q);
 			for (size_t d = Q; d < D; d++)
 			{
@@ -2723,7 +2723,7 @@ int32_t CP::merge()
 	int32_t* is_isolated = merge_chains_next; // reuse storage
 	for (int32_t rv = 0; rv < rV; rv++)
 	{
-		is_isolated[rv] = ((int32_t) true);
+		is_isolated[rv] = ((int32_t)true);
 	}
 
 	for (int32_t re = 0; re < rE; re++)
@@ -2740,7 +2740,7 @@ int32_t CP::merge()
 		reduced_edges_v(re) = rv;
 		if (ru != rv && reduced_edge_weights[ru] > 0.0)
 		{
-			is_isolated[ru] = is_isolated[rv] = ((int32_t) false);
+			is_isolated[ru] = is_isolated[rv] = ((int32_t)false);
 		}
 	}
 

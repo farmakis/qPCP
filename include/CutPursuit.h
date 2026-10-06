@@ -175,7 +175,7 @@ class CP
 	/* specific loss */
 	float quadratic_loss() const
 	{
-		return D;
+		return static_cast<float>(D);
 	}
 
 	/* Y is changed only if the corresponding argument is not null */

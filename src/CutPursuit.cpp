@@ -2723,7 +2723,7 @@ int32_t CP::merge()
 	int32_t* is_isolated = merge_chains_next; // reuse storage
 	for (int32_t rv = 0; rv < rV; rv++)
 	{
-		is_isolated[rv] = ((int32_t)true);
+		is_isolated[rv] = NOT_ISOLATED;
 	}
 
 	for (int32_t re = 0; re < rE; re++)
@@ -2740,7 +2740,7 @@ int32_t CP::merge()
 		reduced_edges_v(re) = rv;
 		if (ru != rv && reduced_edge_weights[ru] > 0.0)
 		{
-			is_isolated[ru] = is_isolated[rv] = ((int32_t)false);
+			is_isolated[ru] = is_isolated[rv] = ISOLATED;
 		}
 	}
 
@@ -2768,8 +2768,8 @@ int32_t CP::merge()
 		/* put it in the list if regular or isolated */
 		if (ru != rv || is_isolated[ru])
 		{
-			new_red_edg[((size_t)2) * final_re]     = ru;
-			new_red_edg[((size_t)2) * final_re + 1] = rv;
+			new_red_edg[static_cast<size_t>(2) * final_re]     = ru;
+			new_red_edg[static_cast<size_t>(2) * final_re + 1] = rv;
 			/* compute edge weight */
 			if (is_isolated[ru])
 			{

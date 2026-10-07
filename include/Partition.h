@@ -24,15 +24,14 @@ namespace PCP
 	//! Parameters and input features of the Parallel Cut Pursuit algorithm
 	struct Parameters
 	{
-		int32_t            knn       = 0;         //!< maximum number of neighbors to search for each point (k)
-		double             knnRadius = 0.0;       //!< maximum distance to search for neighbors
-		int32_t            N         = 0;         //!< number of points in the cloud
-		int32_t            D         = 0;         //!< number of dimensions of the feature space
-		std::vector<float> Y;                     //!< feature matrix (size N * D, row-major)
-		float              regularization = 0.0f; //!< regularization strength
-		float              spatialWeight =
-		    0.0f;           //!< weight of spatial coordinates in the feature space
-		int32_t cutoff = 0; //!< minimum component weight
+		int32_t knn            = 0;    //!< maximum number of neighbors to search for each point (k)
+		double  knnRadius      = 0.0;  //!< maximum distance to search for neighbors
+		int32_t D              = 0;    //!< number of dimensions of the feature space
+		float   regularization = 0.0f; //!< regularization strength
+		float   spatialWeight  = 0.0f; //!< weight of spatial coordinates in the feature space
+		int32_t cutoff         = 0;    //!< minimum component weight
+
+		std::vector<float> Y; //!< feature matrix (size = number of points * D, row-major)
 	};
 
 	//! Point cloud partitioning algorithms based on the Parallel Cut Pursuit method
@@ -59,7 +58,7 @@ namespace PCP
 		callback mechanism \param theOctree the cloud octree if it has already been
 		computed \return the number of components (>= 0) or an error code (< 0)
 		**/
-		static int labelCutPursuitComponents(
+		static int LabelCutPursuitComponents(
 		    CCCoreLib::GenericIndexedCloudPersist* theCloud,
 		    const Parameters&                      params,
 		    std::vector<int32_t>&                  components,

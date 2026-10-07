@@ -21,11 +21,11 @@ static inline int compute_num_threads(uintmax_t num_ops,
                                       uintmax_t max_threads)
 {
 	uintmax_t num_threads = num_ops / MIN_OPS_PER_THREAD;
-	if (num_threads > (unsigned)omp_get_max_threads())
+	if (num_threads > static_cast<uintmax_t>(omp_get_max_threads()))
 	{
 		num_threads = omp_get_max_threads();
 	}
-	if (num_threads > (unsigned)omp_get_num_procs())
+	if (num_threads > static_cast<uintmax_t>(omp_get_num_procs()))
 	{
 		num_threads = omp_get_num_procs();
 	}
@@ -33,7 +33,7 @@ static inline int compute_num_threads(uintmax_t num_ops,
 	{
 		num_threads = max_threads;
 	}
-	return num_threads > 1 ? num_threads : 1;
+	return num_threads > 1 ? static_cast<int>(num_threads) : 1;
 }
 
 /* overload for max_threads defaulting to num_ops */

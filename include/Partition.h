@@ -62,6 +62,8 @@ namespace PCP
 		    CCCoreLib::GenericIndexedCloudPersist* theCloud,
 		    const Parameters&                      params,
 		    std::vector<int32_t>&                  components,
+			std::vector<int32_t>&                  components_list,
+			std::vector<int32_t>&                  components_offset,
 		    CCCoreLib::GenericProgressCallback*    progressCb = nullptr,
 		    CCCoreLib::DgmOctree*                  theOctree  = nullptr);
 	};

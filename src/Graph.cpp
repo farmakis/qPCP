@@ -175,6 +175,8 @@ int Graph::partitionCutPursuit(
     int32_t                   D,
     const std::vector<float>& Y,
     std::vector<int32_t>&     components,
+	std::vector<int32_t>&     components_list,
+	std::vector<int32_t>&     components_offset,
     float                     regularization,
     float                     spatialWeight,
     int32_t                   cutoff,
@@ -292,9 +294,16 @@ int Graph::partitionCutPursuit(
 
 	// Copy results
 	components.resize(m_N);
+	components_list.resize(m_N);
+	components_offset.resize(m_N + 1);
 	for (int32_t i = 0; i < m_N; i++)
 	{
 		components[i] = static_cast<int32_t>(comp_assign[i]);
+		components_list[i] = static_cast<int32_t>(comp_list[i]);
+	}
+	for (int32_t i = 0; i < rV + 1; i++)
+	{
+		components_offset[i] = static_cast<int32_t>(first_vertex[i]);
 	}
 
 	delete cp;

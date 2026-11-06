@@ -92,6 +92,8 @@ namespace PCP
 		    int32_t                   D,
 		    const std::vector<float>& Y,
 		    std::vector<int32_t>&     components,
+			std::vector<int32_t>&     components_list,
+			std::vector<int32_t>&     components_offset,
 		    float                     regularization,
 		    float                     spatialWeight,
 		    int32_t                   cutoff,

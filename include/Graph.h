@@ -91,9 +91,9 @@ namespace PCP
 		int partitionCutPursuit(
 		    int32_t                   D,
 		    const std::vector<float>& Y,
-		    std::vector<int32_t>&     components,
-			std::vector<int32_t>&     components_list,
-			std::vector<int32_t>&     components_offset,
+		    std::vector<int32_t>&     componentLabel,
+		    std::vector<int32_t>*     componentList,
+		    std::vector<int32_t>*     componentOffset,
 		    float                     regularization,
 		    float                     spatialWeight,
 		    int32_t                   cutoff,

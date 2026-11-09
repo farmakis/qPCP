@@ -174,9 +174,9 @@ void Graph::edgeListToForwardStar(int32_t V, size_t E, const int32_t* edges, int
 int Graph::partitionCutPursuit(
     int32_t                   D,
     const std::vector<float>& Y,
-    std::vector<int32_t>&     components,
-	std::vector<int32_t>&     components_list,
-	std::vector<int32_t>&     components_offset,
+    std::vector<int32_t>&     componentLabel,
+    std::vector<int32_t>*     componentList,
+    std::vector<int32_t>*     componentOffset,
     float                     regularization,
     float                     spatialWeight,
     int32_t                   cutoff,
@@ -293,17 +293,14 @@ int Graph::partitionCutPursuit(
 	auto           rV = cp->get_components(&comp_assign, &first_vertex, &comp_list);
 
 	// Copy results
-	components.resize(m_N);
-	components_list.resize(m_N);
-	components_offset.resize(m_N + 1);
-	for (int32_t i = 0; i < m_N; i++)
+	componentLabel.assign(comp_assign, comp_assign + m_N);
+	if (componentList)
 	{
-		components[i] = static_cast<int32_t>(comp_assign[i]);
-		components_list[i] = static_cast<int32_t>(comp_list[i]);
+		componentList->assign(comp_list, comp_list + m_N);
 	}
-	for (int32_t i = 0; i < rV + 1; i++)
+	if (componentOffset)
 	{
-		components_offset[i] = static_cast<int32_t>(first_vertex[i]);
+		componentOffset->assign(first_vertex, first_vertex + rV + 1);
 	}
 
 	delete cp;

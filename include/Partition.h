@@ -53,18 +53,23 @@ namespace PCP
 		  \param regularization the regularization parameter for cut pursuit
 		  \param spatialWeight the weight for spatial coordinates in the feature space
 		  \param cutoff the minimum component weight for the cut pursuit algorithm
-		\param components array to store the output (size should be equal to the
-		number of points in the cloud) \param progressCb process progress through this
-		callback mechanism \param theOctree the cloud octree if it has already been
-		computed \return the number of components (>= 0) or an error code (< 0)
+		\param componentLabel array to store the output component labels per point
+		(size should be equal to the number of points in the cloud)
+		\param componentList (optional) array to list the points in each component
+		(size should be equal to the number of points in the cloud)
+		\param componentOffset (optional) pointer array to the start of each component in componentList
+		(size should be equal to the number of components plus 1)
+		\param progressCb process progress through this callback mechanism
+		\param theOctree the cloud octree if it has already been computed
+		\return the number of components (>= 0) or an error code (< 0)
 		**/
 		static int LabelCutPursuitComponents(
 		    CCCoreLib::GenericIndexedCloudPersist* theCloud,
 		    const Parameters&                      params,
-		    std::vector<int32_t>&                  components,
-			std::vector<int32_t>&                  components_list,
-			std::vector<int32_t>&                  components_offset,
-		    CCCoreLib::GenericProgressCallback*    progressCb = nullptr,
-		    CCCoreLib::DgmOctree*                  theOctree  = nullptr);
+		    std::vector<int32_t>&                  componentLabel,
+		    std::vector<int32_t>*                  componentList   = nullptr,
+		    std::vector<int32_t>*                  componentOffset = nullptr,
+		    CCCoreLib::GenericProgressCallback*    progressCb      = nullptr,
+		    CCCoreLib::DgmOctree*                  theOctree       = nullptr);
 	};
 } // namespace PCP

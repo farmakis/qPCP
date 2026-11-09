@@ -6,9 +6,9 @@ using namespace PCP;
 int Partition::LabelCutPursuitComponents(
     CCCoreLib::GenericIndexedCloudPersist* theCloud,
     const Parameters&                      params,
-    std::vector<int32_t>&                  components,
-	std::vector<int32_t>&                  components_list,
-	std::vector<int32_t>&                  components_offset,
+    std::vector<int32_t>&                  componentLabel,
+    std::vector<int32_t>*                  componentList,
+    std::vector<int32_t>*                  componentOffset,
     CCCoreLib::GenericProgressCallback*    progressCb,
     CCCoreLib::DgmOctree*                  theOctree)
 {
@@ -30,7 +30,7 @@ int Partition::LabelCutPursuitComponents(
 
 	// call cut pursuit
 	auto rV = G.partitionCutPursuit(
-	    params.D, params.Y, components, components_list, components_offset, params.regularization, params.spatialWeight, params.cutoff, 0.01f, 15, 2, 2, 0.7f, 3, 3, 1000, false, true, true, false, -1, progressCb);
+	    params.D, params.Y, componentLabel, componentList, componentOffset, params.regularization, params.spatialWeight, params.cutoff, 0.01f, 15, 2, 2, 0.7f, 3, 3, 1000, false, true, true, false, -1, progressCb);
 
 	return rV;
 }

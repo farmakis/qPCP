@@ -71,6 +71,18 @@ namespace PCP
 			return static_cast<size_t>(m_edges.size() / 2);
 		}
 
+		/* return the edge list of the graph */
+		const std::vector<int32_t>& getEdgeList() const
+		{
+			return m_edges;
+		}
+
+		/* return the edge weights of the graph */
+		const std::vector<float>& getEdgeWeights() const
+		{
+			return m_distances;
+		}
+
 		/* compute edges of the graph
 		 * knn - number of nearest neighbors
 		 * knnRadius - radius for nearest neighbors search
